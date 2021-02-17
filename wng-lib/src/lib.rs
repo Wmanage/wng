@@ -36,7 +36,7 @@ pub fn see_dir(dirname: &PathBuf, o: bool, tests: bool) -> Result<Vec<PathBuf>> 
                 toret.push(entry.path().to_owned());
             }
         } else {
-            if entry.path().extension().unwrap().to_str().unwrap() == "c" {
+            if entry.path().extension().unwrap().to_str().unwrap() == "c" && !entry.path().to_str().unwrap().ends_with("tests.c") {
                 toret.push(entry.path().to_owned());
             }
         }

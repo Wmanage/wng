@@ -1,6 +1,6 @@
 [package]
 name = "wng-lib"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Wafelack <wafelack@protonmail.com>"]
 edition = "2018"
 description = "The W package manager library | WNG is a C package and projects manager written in Rust."

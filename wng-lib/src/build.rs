@@ -7,9 +7,8 @@ use std::{
     time::Instant,
 };
 
-pub fn run(path: Option<&str>, args: Vec<String>, release: bool) -> Result<()> {
-    let name = build(path, release)?;
-
+pub fn run(path: Option<&str>, args: Vec<String>, release: bool, test: bool) -> Result<()> {
+    let name = build(path, release, test)?;
     if release {
         let status = Command::new(&format!("./build/release/{}", name))
             .args(&args)
@@ -54,7 +53,7 @@ pub fn clean() -> Result<()> {
     Ok(())
 }
 
-pub fn build(path: Option<&str>, release: bool) -> Result<String> {
+pub fn build(path: Option<&str>, release: bool, test: bool) -> Result<String> {
     let config_file = crate::get_config_file(path);
     let cfg_toml: toml::Value = toml::from_str(&fs::read_to_string(config_file)?)?;
 
@@ -104,7 +103,11 @@ pub fn build(path: Option<&str>, release: bool) -> Result<String> {
         }
     }
 
-    let files = see_dir(&PathBuf::from_str("src/").unwrap(), false, false)?;
+    let files = see_dir(&PathBuf::from_str("src/").unwrap(), false, test)?;
+
+    if test {
+        clean()?;
+    }
 
     let cc = cfg_toml["cc"].as_str().unwrap_or("gcc");
 
@@ -176,9 +179,9 @@ pub fn build(path: Option<&str>, release: bool) -> Result<String> {
     }
 
     let objects = if release {
-        see_dir(&PathBuf::from_str("build/release/objects").unwrap(), true, false)?
+        see_dir(&PathBuf::from_str("build/release/objects").unwrap(), true, test)?
     } else {
-        see_dir(&PathBuf::from_str("build/debug/objects").unwrap(), true, false)?
+        see_dir(&PathBuf::from_str("build/debug/objects").unwrap(), true, test)?
     };
 
     let comp_status = if release {
