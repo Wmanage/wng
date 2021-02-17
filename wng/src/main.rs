@@ -29,6 +29,15 @@ fn main() -> Result<()> {
                 .about("Builds the current project."),
         )
         .subcommand(
+            SubCommand::with_name("test")
+                .arg(
+                    Arg::with_name("release")
+                        .long("--release")
+                        .help("Specifies to test in release mode.")
+                )
+                .about("Runs the project tests.")
+        )
+        .subcommand(
             SubCommand::with_name("run")
                 .arg(
                     Arg::with_name("release")
@@ -122,9 +131,9 @@ fn main() -> Result<()> {
             remove_dep(matches.value_of("dependency").unwrap(), true)?;
         }
     } else if let Some(matches) = matches.subcommand_matches("build") {
-        build(None, matches.is_present("release"))?;
+        build(None, matches.is_present("release"), false)?;
     } else if let Some(matches) = matches.subcommand_matches("run") {
-        run(None, vec![], matches.is_present("release"))?;
+        run(None, vec![], matches.is_present("release"), false)?;
     } else if let Some(_) = matches.subcommand_matches("clean") {
         clean()?;
     } else if let Some(_) = matches.subcommand_matches("install") {
@@ -146,6 +155,8 @@ fn main() -> Result<()> {
 
             Command::new(plugin_path)
                 .status()?;
+    } else if let Some(m) = matches.subcommand_matches("test") {
+        run(None, vec![], m.is_present("release"), true)?;
     }
 
     Ok(())
