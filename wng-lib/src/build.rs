@@ -7,8 +7,8 @@ use std::{
     time::Instant,
 };
 
-pub fn run(path: Option<&str>, args: Vec<String>, release: bool, test: bool) -> Result<()> {
-    let name = build(path, release, test)?;
+pub fn run(path: Option<&str>, args: Vec<String>, debug: bool, release: bool, test: bool) -> Result<()> {
+    let name = build(path, release, debug, test)?;
     if release {
         let status = Command::new(&format!("./build/release/{}", name))
             .args(&args)
@@ -53,7 +53,7 @@ pub fn clean() -> Result<()> {
     Ok(())
 }
 
-pub fn build(path: Option<&str>, release: bool, test: bool) -> Result<String> {
+pub fn build(path: Option<&str>, release: bool, debug: bool, test: bool) -> Result<String> {
     let config_file = crate::get_config_file(path);
     let cfg_toml: toml::Value = toml::from_str(&fs::read_to_string(config_file)?)?;
 
@@ -155,6 +155,11 @@ pub fn build(path: Option<&str>, release: bool, test: bool) -> Result<String> {
                 .arg("-Wall")
                 .arg("-Werror")
                 .arg("-Wextra")
+                .arg(if debug {
+                    "-g"
+                } else {
+                    ""
+                })
                 .status()?
         } else {
             Command::new(cc)
@@ -166,6 +171,11 @@ pub fn build(path: Option<&str>, release: bool, test: bool) -> Result<String> {
                 .arg("-Wall")
                 .arg("-Werror")
                 .arg("-Wextra")
+                .arg(if debug {
+                    "-g"
+                } else {
+                    ""
+                })
                 .status()?
         };
 

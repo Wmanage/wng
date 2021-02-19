@@ -30,3 +30,9 @@
 ### Added
 
 - wng test command.
+
+## 4.0.3 | ?
+
+### Added
+
+- Debug flag mode default on dev profile.

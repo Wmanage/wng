@@ -462,24 +462,12 @@ version = "4.0.2"
 dependencies = [
  "clap",
  "is_executable",
- "wng-lib 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "wng-lib",
 ]
 
 [[package]]
 name = "wng-lib"
-version = "0.1.3"
-dependencies = [
- "dirs",
- "fs_extra",
- "git2",
- "toml",
-]
-
-[[package]]
-name = "wng-lib"
-version = "0.1.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2a4095ac6bd337908e23ae79ff302b58317326f1a57422a402ecd596477137f0"
+version = "0.1.4"
 dependencies = [
  "dirs",
  "fs_extra",

@@ -131,9 +131,9 @@ fn main() -> Result<()> {
             remove_dep(matches.value_of("dependency").unwrap(), true)?;
         }
     } else if let Some(matches) = matches.subcommand_matches("build") {
-        build(None, matches.is_present("release"), false)?;
+        build(None, matches.is_present("release"), !matches.is_present("release"), false)?;
     } else if let Some(matches) = matches.subcommand_matches("run") {
-        run(None, vec![], matches.is_present("release"), false)?;
+        run(None, vec![], matches.is_present("release"), matches.is_present("release"),false)?;
     } else if let Some(_) = matches.subcommand_matches("clean") {
         clean()?;
     } else if let Some(_) = matches.subcommand_matches("install") {
@@ -156,7 +156,7 @@ fn main() -> Result<()> {
             Command::new(plugin_path)
                 .status()?;
     } else if let Some(m) = matches.subcommand_matches("test") {
-        run(None, vec![], m.is_present("release"), true)?;
+        run(None, vec![], m.is_present("release"),false, true)?;
     }
 
     Ok(())
