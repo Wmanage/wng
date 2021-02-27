@@ -24,7 +24,7 @@ fn main() -> Result<()> {
                 .arg(
                     Arg::with_name("release")
                         .long("--release")
-                        .help("Specifies to build with the O3 flag activated."),
+                        .help("Specifies to build with the -O3 flag activated."),
                 )
                 .about("Builds the current project."),
         )
@@ -42,7 +42,7 @@ fn main() -> Result<()> {
                 .arg(
                     Arg::with_name("release")
                         .long("--release")
-                        .help("Specifies to run with the O3 flag activated."),
+                        .help("Specifies to run with the -O3 flag activated."),
                 )
                 .about("Runs the current project."),
         )
@@ -69,11 +69,11 @@ fn main() -> Result<()> {
                         .about("Remove a dependency from the current project."),
                 ),
         )
-        .subcommand(SubCommand::with_name("setup").about("Setup wanager."))
+        .subcommand(SubCommand::with_name("setup").about("Setup WNG."))
         .subcommand(
             SubCommand::with_name("config")
                 .subcommand(
-                    SubCommand::with_name("reinit").about("Reinitializes wanager configuration."),
+                    SubCommand::with_name("reinit").about("Reinitializes WNG configuration."),
                 )
                 .subcommand(
                     SubCommand::with_name("edit")
