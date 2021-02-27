@@ -60,6 +60,11 @@ Prerequisties: The latest stable rust toolchain
 3. cd in the produced folder
 3. Run `bash install`
 
+* Third method (Gentoo GNU/Linux based systems)
+
+1. Add the woomy-overlay (https://github.com/Woomy4680-exe/woomy-overlay.git) repository using eselect-repository or Layman
+2. Run `emerge dev-util/wng` or `emerge dev-util/wng-bin` to install WNG on your system
+
 DOCUMENTATION
 =============
 
