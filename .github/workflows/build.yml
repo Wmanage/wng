@@ -26,3 +26,20 @@ jobs:
       with:
         name: wng
         path: target/release/wng
+  Windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: rust-toolchain
+      uses: actions-rs/toolchain@v1.0.6
+      with:
+        toolchain: stable
+    - name: Test
+      run: cargo test --verbose
+    - name: Build
+      run: cargo build --verbose --release
+    - name: Upload build
+      uses: actions/upload-artifact@v2
+      with:
+        name: wng.exe
+        path: target/release/wng.exe
