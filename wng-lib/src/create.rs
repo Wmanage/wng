@@ -30,7 +30,7 @@ pub fn create(directory: &str, path: Option<&str>, with_messages: bool) -> crate
 
 int main(void) {
     printf("Hello, World !\n");
-    return 0;
+    return EXIT_SUCCESS;
 }"#;
 
     if !cfg_toml.as_table().unwrap().contains_key("name") {
