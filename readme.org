@@ -1,0 +1,20 @@
+* ketch
+
+A C package manager, project manager and build tool.
+
+** Roadmap
+
++ [ ] Project creation
++ [ ] Project type (~binary~, ~shared~ or ~static~)
++ [ ] Standard selection
++ [ ] Compiler selection
++ [ ] Release mode
++ [ ] Custom build script
++ [ ] Dependencies management
+  - [ ] Branch selection
+  - [ ] Commit selection
++ [ ] Package installation
+
+** License
+
+ketch is licensed under the GNU General Public License version 3.0 or later.
