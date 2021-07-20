@@ -2,13 +2,61 @@ use crate::{
     config::parse_file,
     error,
     errors::{Error, Result},
-    project::{Project, ProjectType},
+    project::{BuildScript, Project, ProjectType},
 };
 use std::{
     fs::{self, File},
     io::Write,
+    path::Path,
     process::Command,
 };
+
+const POSSIBLE_SCRIPTS: [(&str, &str); 3] = [
+    ("./build.sh", "sh"),
+    ("./build.pl", "perl"),
+    ("./build.py", "python3"),
+];
+
+fn run_build_script() -> Result<()> {
+    let mut build_script = None;
+    for (script, interpreter) in POSSIBLE_SCRIPTS {
+        if Path::new(script).exists() {
+            build_script = Some((script, interpreter));
+        }
+    }
+    if let Some((interpreter, script)) = build_script {
+        println!("{} {}", interpreter, script);
+        if !Command::new(interpreter)
+            .arg(script)
+            .status()
+            .map_err(|e| {
+                Error(format!(
+                    "Failed to summon command: `{} {}`: {}",
+                    interpreter,
+                    script,
+                    e
+                ))
+            })?
+            .success()
+        {
+            error!("Aborting at first failed command.")
+        } else {
+            Ok(())
+        }
+    } else {
+        error!(
+            "No buildscript found. Possible build scripts: {}.",
+            POSSIBLE_SCRIPTS
+                .iter()
+                .map(|(script, _)| script)
+                .fold("".to_string(), |acc, v| if acc.is_empty() {
+                    v.to_string()
+                } else {
+                    format!("{},{}", acc, v)
+                })
+        )
+    }
+}
 
 pub fn create_project(name: &str) -> Result<Project> {
     let src = format!("{}/src", name);
@@ -39,6 +87,11 @@ pub fn build_project(release: bool) -> Result<()> {
     if release {
         project.flags.push("-O3".to_string());
     }
+
+    if let BuildScript::Before = project.build_script {
+        return run_build_script();
+    }
+
     let files = read_dir("./src/")?
         .into_iter()
         .filter(|f| f.ends_with(".c"))
@@ -81,6 +134,9 @@ pub fn build_project(release: bool) -> Result<()> {
         if !status.success() {
             return error!("Aborting at first failed command.");
         }
+        if let BuildScript::Each = project.build_script {
+            run_build_script()?;
+        }
     }
 
     let program = if let ProjectType::Static = project.ptype {
@@ -114,11 +170,15 @@ pub fn build_project(release: bool) -> Result<()> {
             e
         ))
     })?;
-
     if !status.success() {
         return error!("Aborting at first failed command.");
     }
-    Ok(())
+
+    if let BuildScript::After = project.build_script {
+        run_build_script()
+    } else {
+        Ok(())
+    }
 }
 
 fn read_dir(dir: &str) -> Result<Vec<String>> {

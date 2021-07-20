@@ -18,6 +18,15 @@ const DEFAULT_STANDARD: Standard = Standard {
 };
 const DEFAULT_PTYPE: ProjectType = ProjectType::Binary;
 
+pub enum BuildScript {
+    None,
+    Only,
+    After,
+    Before,
+    Repeat,
+    Each,
+}
+
 #[repr(u8)]
 #[derive(Copy, Clone)]
 pub enum Std {
@@ -57,6 +66,7 @@ pub struct Project {
     pub compiler: String,
     pub flags: Vec<String>,
     pub ptype: ProjectType,
+    pub build_script: BuildScript,
 }
 impl Display for Project {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
@@ -166,6 +176,17 @@ impl Project {
             },
             _ => error!("Key `type` must be a single string."),
         }?;
+        let build_script = match find_val(&vals, "build_script") {
+            None => Ok(BuildScript::None),
+            Some(ConfigValue::Array(av)) => match get_first(&av, "build_script")?.as_str() {
+                "only" => Ok(BuildScript::Only),
+                "after" => Ok(BuildScript::After),
+                "before" => Ok(BuildScript::Before),
+                "each" => Ok(BuildScript::Each),
+                x => error!("`{}` is not a valid build script frequency. Available frequencies: only, after, before, each.", x),
+            }
+            _ => error!("Key `build_script` must be a single string."),
+        }?;
 
         Ok(Self {
             name,
@@ -174,6 +195,7 @@ impl Project {
             compiler,
             flags,
             ptype,
+            build_script,
         })
     }
 }
