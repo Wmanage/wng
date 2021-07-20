@@ -33,12 +33,16 @@ pub struct Standard {
 }
 impl Display for Standard {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        write!(f, "{}", format!(
-            "{}{}",
-            if self.gnu_extensions { "gnu" } else { "c" },
-            self.std as u8
+        write!(
+            f,
+            "{}",
+            format!(
+                "{}{}",
+                if self.gnu_extensions { "gnu" } else { "c" },
+                self.std as u8
+            )
+            .replace("23", "2x")
         )
-        .replace("23", "2x"))
     }
 }
 pub enum ProjectType {
@@ -47,12 +51,12 @@ pub enum ProjectType {
     Static,
 }
 pub struct Project {
-   pub name: String,
-   pub version: String,
-   pub standard: Standard,
-   pub compiler: String,
-   pub flags: Vec<String>,
-   pub ptype: ProjectType,
+    pub name: String,
+    pub version: String,
+    pub standard: Standard,
+    pub compiler: String,
+    pub flags: Vec<String>,
+    pub ptype: ProjectType,
 }
 impl Display for Project {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
@@ -63,7 +67,8 @@ impl Display for Project {
             self.flags
                 .iter()
                 .fold("".to_string(), |acc, v| format!("{}{} ", acc, v)),
-            self.standard)?;
+            self.standard
+        )?;
         writeln!(
             f,
             "TYPE     {}",
@@ -89,11 +94,16 @@ impl Project {
         } else {
             error!("Key `version` must be a single string.")
         }?;
-        let standard =
-            match find_val(&vals, "standard") {
-                None => Ok(DEFAULT_STANDARD),
-                Some(ConfigValue::Array(av)) => {
-                    let raw = get_first(&av, "standard")?;
+        let standard = match find_val(&vals, "standard") {
+            None => Ok(DEFAULT_STANDARD),
+            Some(ConfigValue::Array(av)) => {
+                let raw = get_first(&av, "standard")?;
+                if raw.as_str() == "ansi" {
+                    Ok(Standard {
+                        gnu_extensions: false,
+                        std: Std::C89,
+                    })
+                } else {
                     let prefix = if raw.starts_with("gnu") { "gnu" } else { "c" };
 
                     let standards = &[Std::C89, Std::C99, Std::C11, Std::C17, Std::C23];
@@ -114,17 +124,18 @@ impl Project {
                                 error!(
                                     "`{}` is not a valid C standard. Valid standards are: {}",
                                     raw,
-                                    standards.iter().fold(
-                                        "ansi".to_string(),
-                                        |acc, v| format!("{}, c{}, gnu{}", acc, *v as u8, *v as u8)
-                                    )
+                                    standards.iter().fold("ansi".to_string(), |acc, v| format!(
+                                        "{}, c{}, gnu{}",
+                                        acc, *v as u8, *v as u8
+                                    ))
                                 ),
                                 Ok,
                             )?,
                     })
                 }
-                _ => error!("Key `standard` must be a single string."),
-            }?;
+            }
+            _ => error!("Key `standard` must be a single string."),
+        }?;
         let compiler = match find_val(&vals, "cc") {
             None => Ok(DEFAULT_COMPILER.to_string()),
             Some(ConfigValue::Array(av)) => get_first(&av, "cc"),
