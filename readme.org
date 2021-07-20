@@ -18,12 +18,12 @@ A C package manager, project manager and build tool.
 ** Ketchfile format
 
 *** Ketchfile EBNF syntax
-#BEGIN_SRC ebnf
+#+BEGIN_SRC ebnf
 ident = [^\s()\n\t\r]* ;
 array = ident+ ;
 pair = '(' ident value ')' ;
 value = array | pair ;
-#END_SRC
+#+END_SRC
 
 *** Ketchfile fields
 
