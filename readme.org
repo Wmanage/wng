@@ -15,6 +15,57 @@ A C package manager, project manager and build tool.
   - [ ] Commit selection
 + [ ] Package installation
 
+** Ketchfile format
+
+*** Ketchfile EBNF syntax
+#BEGIN_SRC ebnf
+ident = [^\s()\n\t\r]* ;
+array = ident+ ;
+pair = '(' ident value ')' ;
+value = array | pair ;
+#END_SRC
+
+*** Ketchfile fields
+
+**** ~name~
+
++ Description: The project name.
+
+**** ~version~
+
++ Description: The project version.
++ Note: It is advised to respect [[https://semver.org][Semantic Versionning]]
+
+**** ~standard~
+
++ Description: The standard used to compile the code.
++ Possible values: ansi,c89,gnu89,c99,gnu99,c11,gnu11,c17,gnu17,c2x,gnu2x
++ Default value: c99
+
+**** ~cc~
+
++ Description: The compiler used to compile the code.
++ Default value: ~cc~
+
+**** ~flags~
+
++ Description: The flags to pass to the compiler.
++ Possible values: any flags accepted by your compiler.
++ Default value: ~-Wall -Wextra -Wwrite-strings -Werror=discarded-qualifiers~
+
+**** ~type~
+
++ Description: The project type.
++ Possible values: binary,shared,static
++ Default value: binary
+
+**** ~build_script~
+
++ Description: The frequency of build script runs.
++ Possible values: None (do not run), Only (only run the build script, do not compile automatically), after (run after compilation and link), before (run before compilation), repeat (run after the compilation of each file)
++ Default value: None
++ Note: The build script can be either a Perl script (~build.pl~), a Python script (~build.py~) or a Shell script (~build.sh~).
+
 ** License
 
 ketch is licensed under the GNU General Public License version 3.0 or later.

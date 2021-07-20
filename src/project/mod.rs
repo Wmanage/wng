@@ -178,6 +178,7 @@ impl Project {
         let build_script = match find_val(&vals, "build_script") {
             None => Ok(BuildScript::None),
             Some(ConfigValue::Array(av)) => match get_first(&av, "build_script")?.as_str() {
+                "none" => Ok(BuildScript::None),
                 "only" => Ok(BuildScript::Only),
                 "after" => Ok(BuildScript::After),
                 "before" => Ok(BuildScript::Before),

@@ -92,8 +92,10 @@ pub fn build_project(release: bool) -> Result<()> {
         project.flags.push("-O3".to_string());
     }
 
-    if let BuildScript::Before = project.build_script {
+    if let BuildScript::Only = project.build_script {
         return run_build_script();
+    } else if let BuildScript::Before = project.build_script {
+        run_build_script()?;
     }
 
     let files = read_dir("./src/")?

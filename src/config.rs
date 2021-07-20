@@ -39,7 +39,7 @@ impl ConfigParser {
         self.current >= self.input.len()
     }
     fn parse_ident(&mut self) -> Result<String> {
-        let terminating = &['\n', '\r', ' ', '\t', ')'];
+        let terminating = &['\n', '\r', ' ', '\t', ')', '('];
         let mut out = String::new();
         while !self.is_at_end() && !terminating.contains(&self.peek().unwrap()) {
             out.push(self.advance());
