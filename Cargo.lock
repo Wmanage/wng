@@ -3,5 +3,14 @@
 version = 3
 
 [[package]]
+name = "getopt_rs"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f553803523c5e44b0f1c7c2d3362b31882f325d2a86713fdf4f1290b477cacaf"
+
+[[package]]
 name = "ketch"
 version = "0.1.0"
+dependencies = [
+ "getopt_rs",
+]

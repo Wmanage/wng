@@ -86,9 +86,6 @@ impl ConfigParser {
     }
 }
 
-fn parse_string(s: impl ToString) -> Result<Vec<ConfigValue>> {
-    ConfigParser::new(s).parse()
-}
 pub fn parse_file(name: impl ToString) -> Result<Vec<ConfigValue>> {
     ConfigParser::new(
         fs::read_to_string(&name.to_string())

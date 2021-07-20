@@ -58,7 +58,7 @@ fn run_build_script() -> Result<()> {
     }
 }
 
-pub fn create_project(name: &str) -> Result<Project> {
+pub fn create_project(name: &str, ptype: ProjectType) -> Result<Project> {
     let src = format!("{}/src", name);
     fs::create_dir_all(&src)
         .map_err(|e| Error(format!("Failed to create directory: {}: {}.", src, e)))?;
@@ -70,7 +70,11 @@ pub fn create_project(name: &str) -> Result<Project> {
     let ketchfile = format!("{}/ketchfile", name);
     File::create(&ketchfile)
         .map_err(|e| Error(format!("Failed to create file: {}: {}.", ketchfile, e)))?
-        .write_all(format!("(name {})\n(version 0.1.0)\n", name).as_bytes())
+        .write_all(format!("(name {})\n(version 0.1.0)\n(type {})\n", name, match ptype {
+            ProjectType::Binary => "binary",
+            ProjectType::Shared => "shared",
+            ProjectType::Static => "static",
+        }).as_bytes())
         .map_err(|e| Error(format!("Failed to write file: {}: {}.", ketchfile, e)))?;
 
     let main = format!("{}/main.c", src);
@@ -134,7 +138,7 @@ pub fn build_project(release: bool) -> Result<()> {
         if !status.success() {
             return error!("Aborting at first failed command.");
         }
-        if let BuildScript::Each = project.build_script {
+        if let BuildScript::Repeat = project.build_script {
             run_build_script()?;
         }
     }

@@ -24,7 +24,6 @@ pub enum BuildScript {
     After,
     Before,
     Repeat,
-    Each,
 }
 
 #[repr(u8)]
@@ -182,8 +181,8 @@ impl Project {
                 "only" => Ok(BuildScript::Only),
                 "after" => Ok(BuildScript::After),
                 "before" => Ok(BuildScript::Before),
-                "each" => Ok(BuildScript::Each),
-                x => error!("`{}` is not a valid build script frequency. Available frequencies: only, after, before, each.", x),
+                "repeat" => Ok(BuildScript::Repeat),
+                x => error!("`{}` is not a valid build script frequency. Available frequencies: only, after, before, repeat.", x),
             }
             _ => error!("Key `build_script` must be a single string."),
         }?;

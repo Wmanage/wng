@@ -9,7 +9,7 @@ A C package manager, project manager and build tool.
 + [x] Standard selection
 + [x] Compiler selection
 + [x] Release mode
-+ [ ] Custom build script
++ [x] Custom build script
 + [ ] Dependencies management
   - [ ] Branch selection
   - [ ] Commit selection
