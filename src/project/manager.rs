@@ -2,7 +2,7 @@ use crate::{
     config::parse_file,
     error,
     errors::{Error, Result},
-    project::project::{Project, ProjectType},
+    project::{Project, ProjectType},
 };
 use std::{
     fs::{self, File},
@@ -34,8 +34,11 @@ pub fn create_project(name: &str) -> Result<Project> {
     Project::from_config(parse_file(ketchfile)?)
 }
 
-pub fn build_project() -> Result<()> {
-    let project = Project::from_config(parse_file("./ketchfile")?)?;
+pub fn build_project(release: bool) -> Result<()> {
+    let mut project = Project::from_config(parse_file("./ketchfile")?)?;
+    if release {
+        project.flags.push("-O3".to_string());
+    }
     let files = read_dir("./src/")?
         .into_iter()
         .filter(|f| f.ends_with(".c"))
@@ -56,7 +59,7 @@ pub fn build_project() -> Result<()> {
         flags.push(format!("-std={}", project.standard));
         flags.extend(vec!["-c".to_string(), file.clone(), "-o".to_string()]);
         let built = format!(
-            "build/{}",
+            "./build/{}",
             file[6..] /* Skip `./src/` prefix */
                 .replace("/", "_")
                 .replace(".c", ".o")
@@ -111,10 +114,10 @@ pub fn build_project() -> Result<()> {
             e
         ))
     })?;
+
     if !status.success() {
         return error!("Aborting at first failed command.");
     }
-
     Ok(())
 }
 

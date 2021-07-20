@@ -8,7 +8,7 @@ A C package manager, project manager and build tool.
 + [x] Project type (~binary~, ~shared~ or ~static~)
 + [x] Standard selection
 + [x] Compiler selection
-+ [ ] Release mode
++ [x] Release mode
 + [ ] Custom build script
 + [ ] Dependencies management
   - [ ] Branch selection

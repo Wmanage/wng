@@ -15,5 +15,5 @@ fn main() -> ! {
 }
 
 fn try_main() -> Result<()> {
-    build_project()
+    build_project(true)
 }
