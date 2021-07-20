@@ -4,10 +4,10 @@ A C package manager, project manager and build tool.
 
 ** Roadmap
 
-+ [ ] Project creation
-+ [ ] Project type (~binary~, ~shared~ or ~static~)
-+ [ ] Standard selection
-+ [ ] Compiler selection
++ [x] Project creation
++ [x] Project type (~binary~, ~shared~ or ~static~)
++ [x] Standard selection
++ [x] Compiler selection
 + [ ] Release mode
 + [ ] Custom build script
 + [ ] Dependencies management

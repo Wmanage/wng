@@ -1,13 +1,19 @@
+mod config;
 mod errors;
-use errors::{handle_error, Result, Error};
+mod project;
 
-fn main() {
-    match try_main () {
-        Ok(()) => {},
-        Err(e) => handle_error(e),
+use errors::Result;
+use project::manager::{build_project, create_project};
+use std::process::exit;
+
+fn main() -> ! {
+    match try_main() {
+        Ok(()) => exit(0),
+        Err(e) => eprintln!("ketch: {}", e.0),
     }
+    exit(1);
 }
 
 fn try_main() -> Result<()> {
-    Ok(())
+    build_project()
 }
